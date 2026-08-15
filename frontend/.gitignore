@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Next.js Build Output
+.next/
+out/
+build/
+.vercel/
+
+# Environment Files
+.env*.local
+.env
+
+# Logs & OS Metadata
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db

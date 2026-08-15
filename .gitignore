@@ -1,0 +1,56 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python / Virtual Environment
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+ENV/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+backend/database/*.db
+backend/database/*.sqlite3
+
+# Precomputed IR Indexes
+backend/ir/indexes/*.pkl
+
+# Node.js & Next.js Build Output
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+frontend/out/
+build/
+frontend/build/
+.vercel/
+
+# Media & Large Datasets (.jpg, .png, .txt)
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.txt
+dataset/images/
+frontend/public/artifacts/
+
+# OS & Editor Metadata
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+.vscode/
+.idea/

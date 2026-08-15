@@ -1,0 +1,23 @@
+# Environment & Secrets
+.env
+.env.local
+
+# Python Caches & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+ENV/
+.pytest_cache/
+.coverage
+
+# SQLite Database & Precomputed IR Indexes
+database/*.db
+database/*.sqlite3
+ir/indexes/*.pkl
+
+# OS Metadata
+.DS_Store
+Thumbs.db

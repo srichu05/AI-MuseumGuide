@@ -1,0 +1,75 @@
+[
+  {
+    "id": "QA001",
+    "question": "Who created The Thinker?",
+    "expected_intent": "GET_CREATOR",
+    "target_artifact": "ART001",
+    "target_artist": "ARTIST001",
+    "target_chunk_id": "CHUNK00000",
+    "expected_factoid": "Auguste Rodin",
+    "grounded_sources": ["Catalogue: The Thinker", "Biography: Auguste Rodin"]
+  },
+  {
+    "id": "QA002",
+    "question": "Where is the Mona Lisa located in the museum?",
+    "expected_intent": "GET_LOCATION",
+    "target_artifact": "ART002",
+    "target_gallery": "GAL003",
+    "target_chunk_id": "CHUNK00003",
+    "expected_factoid": "Renaissance Hall",
+    "grounded_sources": ["Catalogue: Mona Lisa"]
+  },
+  {
+    "id": "QA003",
+    "question": "What historical period does the Bust of Nefertiti belong to?",
+    "expected_intent": "GET_PERIOD",
+    "target_artifact": "ART015",
+    "target_period": "PER001",
+    "target_chunk_id": "CHUNK00042",
+    "expected_factoid": "Ancient Egypt",
+    "grounded_sources": ["Catalogue: Bust of Nefertiti", "History: Ancient Egypt"]
+  },
+  {
+    "id": "QA004",
+    "question": "When was Starry Night painted by Vincent van Gogh?",
+    "expected_intent": "GET_YEAR",
+    "target_artifact": "ART004",
+    "target_chunk_id": "CHUNK00009",
+    "expected_factoid": "1889",
+    "grounded_sources": ["Catalogue: Starry Night"]
+  },
+  {
+    "id": "QA005",
+    "question": "Tell me about the historical significance of the Rosetta Stone.",
+    "expected_intent": "GET_HISTORY",
+    "target_artifact": "ART037",
+    "target_chunk_id": "CHUNK00108",
+    "expected_factoid": "key to deciphering Egyptian hieroglyphs",
+    "grounded_sources": ["Catalogue: Rosetta Stone"]
+  },
+  {
+    "id": "QA006",
+    "question": "What other works did Auguste Rodin create?",
+    "expected_intent": "GET_OTHER_WORKS",
+    "target_artifact": "ART001",
+    "target_artist": "ARTIST001",
+    "expected_factoid": "The Kiss",
+    "grounded_sources": ["Museum Artifact Database"]
+  },
+  {
+    "id": "QA007",
+    "question": "Which exhibition features bronze sculptures?",
+    "expected_intent": "GET_EXHIBITION",
+    "target_artifact": "ART001",
+    "expected_factoid": "Masters of Bronze",
+    "grounded_sources": ["Exhibition: Masters of Bronze"]
+  },
+  {
+    "id": "QA008",
+    "question": "Describe the composition of Guernica.",
+    "expected_intent": "GET_DESCRIPTION",
+    "target_artifact": "ART006",
+    "expected_factoid": "anti-war mural responding to the bombing",
+    "grounded_sources": ["Catalogue: Guernica"]
+  }
+]
