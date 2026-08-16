@@ -1,0 +1,40 @@
+{
+  "dataset_dir": "C:\\Users\\R Raghavendra\\Downloads\\PROJECTS\\AI-museum\\dataset\\ai_museum_cnn",
+  "total_valid_images": 3000,
+  "corrupt_images_count": 0,
+  "corrupt_images": [],
+  "split_counts": {
+    "train": {
+      "expressionism": 350,
+      "impressionism": 350,
+      "post-impressionism": 350,
+      "realism": 350,
+      "romanticism": 350,
+      "surrealism": 350
+    },
+    "validation": {
+      "expressionism": 75,
+      "impressionism": 75,
+      "post-impressionism": 75,
+      "realism": 75,
+      "romanticism": 75,
+      "surrealism": 75
+    },
+    "test": {
+      "expressionism": 75,
+      "impressionism": 75,
+      "post-impressionism": 75,
+      "realism": 75,
+      "romanticism": 75,
+      "surrealism": 75
+    }
+  },
+  "classes": [
+    "expressionism",
+    "impressionism",
+    "post-impressionism",
+    "realism",
+    "romanticism",
+    "surrealism"
+  ]
+}

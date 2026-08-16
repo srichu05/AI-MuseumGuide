@@ -42,6 +42,8 @@ TRAINING_DATA = [
     ("tell me about the bust of nefertiti", "GET_ARTIFACT_INFO"), ("what can you tell me about this masterpiece", "GET_ARTIFACT_INFO"),
     ("can you explain this painting", "GET_ARTIFACT_INFO"), ("overview of this sculpture", "GET_ARTIFACT_INFO"),
     ("tell me about guernica", "GET_ARTIFACT_INFO"), ("what is the birth of venus", "GET_ARTIFACT_INFO"),
+    ("tell me something about the black iris artifact", "GET_ARTIFACT_INFO"), ("tell me something about this artwork", "GET_ARTIFACT_INFO"),
+    ("tell me more about this piece", "GET_ARTIFACT_INFO"), ("can you tell me something about it", "GET_ARTIFACT_INFO"),
 
     # GET_CREATOR
     ("who created this", "GET_CREATOR"), ("who made it", "GET_CREATOR"), ("who is the artist", "GET_CREATOR"),
@@ -122,7 +124,8 @@ RULE_PATTERNS = [
     (r"\b(when|year|date|created in|completion|how old)\b", "GET_YEAR"),
     (r"\b(histor(y|ical)|significance|context|origin|provenance|story behind|why is it famous)\b", "GET_HISTORY"),
     (r"\b(describe|depict|look like|portray|composition|am i looking at)\b", "GET_DESCRIPTION"),
-    (r"\b(tell me about|info about|information about|details on|overview of|explain this)\b", "GET_ARTIFACT_INFO"),
+    (r"\b(tell me|info|information|details|overview|explain|something|anything|tell)\b.*?\b(about|on|of|regarding)\b", "GET_ARTIFACT_INFO"),
+    (r"\b(tell me about|info about|information about|details on|overview of|explain this|tell me something about|tell me more about)\b", "GET_ARTIFACT_INFO"),
     (r"\b(other works|more (works|paintings|sculptures|pieces)|what else|oldest|newest)\b", "GET_OTHER_WORKS"),
     (r"\bexhibition\b", "GET_EXHIBITION"),
     (r"\bgallery\b", "GET_GALLERY"),

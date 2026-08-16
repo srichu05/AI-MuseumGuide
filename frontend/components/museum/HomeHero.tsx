@@ -15,12 +15,12 @@ export function HomeHero() {
   }, []);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className="text-center flex flex-col items-center">
       <p className="hero-line text-sm uppercase tracking-[0.25em] text-accent">Curated Collection</p>
-      <h1 className="hero-line mt-4 max-w-3xl font-display text-5xl font-medium leading-tight md:text-7xl">
+      <h1 className="hero-line mt-3 max-w-3xl font-display text-4xl font-medium leading-tight md:text-6xl mx-auto">
         Where Art Meets <span className="gradient-text">Intelligent Discovery</span>
       </h1>
-      <p className="hero-line mt-6 max-w-xl text-lg text-muted-foreground">
+      <p className="hero-line mt-4 max-w-xl text-base text-muted-foreground md:text-lg mx-auto">
         A cinematic digital museum experience powered by traditional NLP, information retrieval,
         and multimodal AI — never a generic chatbot.
       </p>

@@ -17,6 +17,13 @@ def _match_from_list(text: str, names: list[str], entity_type: str) -> list[dict
         pattern = re.escape(name.lower())
         if re.search(rf"\b{pattern}\b", lower):
             found.append({"text": name, "type": entity_type, "start": lower.find(name.lower()), "method": "gazetteer"})
+        else:
+            # Strip trailing Roman numerals and noise words (e.g. "Black Iris III" -> "Black Iris")
+            base_name = re.sub(r"\s+(iii|ii|iv|i|v|vi|vii|viii|ix|x)\b", "", name.lower(), flags=re.IGNORECASE).strip()
+            if len(base_name) >= 4:
+                base_pattern = re.escape(base_name)
+                if re.search(rf"\b{base_pattern}\b", lower):
+                    found.append({"text": name, "type": entity_type, "start": lower.find(base_name), "method": "gazetteer_fuzzy"})
     return found
 
 

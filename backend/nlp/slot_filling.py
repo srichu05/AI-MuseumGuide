@@ -84,6 +84,13 @@ def fill_slots(
             slots["artifact_id"] = rec["artifact_id"]
             slots["artifact_name"] = rec["name"]
 
+    if not slots["artifact_id"]:
+        # Try finding artifact from full text
+        rec = db_resolver.get_artifact_by_name(text)
+        if rec:
+            slots["artifact_id"] = rec["artifact_id"]
+            slots["artifact_name"] = rec["name"]
+
     if not slots["artist_id"] and coref["artist"]:
         rec = db_resolver.get_artist_by_id(coref["artist"]) if coref["artist"] else None
         if rec:

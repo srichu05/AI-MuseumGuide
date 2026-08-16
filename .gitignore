@@ -15,6 +15,11 @@ ENV/
 .pytest_cache/
 .coverage
 htmlcov/
+*.log
+
+# Scratch & Temporary Code
+backend/scratch/
+scratch/
 
 # Database Files
 *.db
@@ -37,7 +42,7 @@ build/
 frontend/build/
 .vercel/
 
-# Media & Large Datasets (.jpg, .png, .txt)
+# Media & Large Datasets (.jpg, .jpeg, .png, .webp, .gif, .txt)
 *.jpg
 *.jpeg
 *.png

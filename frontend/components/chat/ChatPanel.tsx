@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Loader2, BookOpen } from "lucide-react";
+import { Send, Loader2, BookOpen, Copy, Download, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { chatMessage, ChatResponse, Artifact } from "@/lib/api";
@@ -72,24 +72,62 @@ export function ChatPanel({ sessionId: initialSession, artifact, className }: Ch
     }
   };
 
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+
+  const copyMessage = (text: string, idx: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2000);
+  };
+
+  const exportChatJson = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
+    const downloadAnchor = document.createElement("a");
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `museum_chat_${sessionId || "session"}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
   return (
     <div className={cn("flex h-full flex-col rounded-xl border border-border bg-card", className)}>
-      <div className="border-b border-border px-4 py-3">
-        <h3 className="font-display text-lg">Museum Guide</h3>
-        {artifact && (
-          <p className="text-xs text-muted-foreground">Context: {artifact.name}</p>
-        )}
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <div>
+          <h3 className="font-display text-lg">Museum Guide</h3>
+          {artifact && (
+            <p className="text-xs text-accent font-medium">Context: {artifact.name}</p>
+          )}
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={exportChatJson}
+          className="h-8 gap-1.5 text-xs"
+          title="Export chat transcript as JSON"
+        >
+          <Download className="h-3.5 w-3.5" /> Export
+        </Button>
       </div>
       <div className="flex-1 space-y-4 overflow-y-auto p-4" style={{ maxHeight: "420px" }}>
         {messages.map((m, i) => (
           <div key={i} className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}>
             <div
               className={cn(
-                "max-w-[85%] rounded-lg px-4 py-3 text-sm",
+                "relative group max-w-[85%] rounded-lg px-4 py-3 text-sm",
                 m.role === "user" ? "bg-accent text-accent-foreground" : "bg-muted"
               )}
             >
               <p>{m.content}</p>
+              {m.role === "assistant" && (
+                <button
+                  onClick={() => copyMessage(m.content, i)}
+                  className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-background/50 text-muted-foreground hover:text-foreground"
+                  title="Copy response"
+                >
+                  {copiedIdx === i ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                </button>
+              )}
               {m.sources && m.sources.length > 0 && (
                 <div className="mt-3 border-t border-border/50 pt-2">
                   <p className="mb-1 flex items-center gap-1 text-xs font-medium text-muted-foreground">

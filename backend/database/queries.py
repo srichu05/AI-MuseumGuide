@@ -33,6 +33,32 @@ class MuseumQueries:
         )
 
     def get_artifact_by_name(self, name: str) -> dict[str, Any] | None:
+        if not name or not name.strip():
+            return None
+        raw_name = name.strip()
+        # Clean noise words
+        import re
+        clean_name = re.sub(r"\b(artifact|painting|sculpture|piece|artwork|statue|work)\b", "", raw_name, flags=re.IGNORECASE).strip()
+        if not clean_name:
+            clean_name = raw_name
+
+        rec = self._fetchone_dict(
+            """
+            SELECT a.*, ar.name AS artist_name, ar.artist_id,
+                   p.name AS period_name, p.period_id,
+                   g.name AS gallery_name, g.floor, g.location AS gallery_location
+            FROM artifacts a
+            LEFT JOIN artists ar ON a.artist_id = ar.artist_id
+            LEFT JOIN historical_periods p ON a.period_id = p.period_id
+            LEFT JOIN galleries g ON a.gallery_id = g.gallery_id
+            WHERE LOWER(a.name) = LOWER(?) OR LOWER(a.name) = LOWER(?)
+            """,
+            (raw_name, clean_name),
+        )
+        if rec:
+            return rec
+
+        # Fallback to LIKE match
         return self._fetchone_dict(
             """
             SELECT a.*, ar.name AS artist_name, ar.artist_id,
@@ -42,9 +68,10 @@ class MuseumQueries:
             LEFT JOIN artists ar ON a.artist_id = ar.artist_id
             LEFT JOIN historical_periods p ON a.period_id = p.period_id
             LEFT JOIN galleries g ON a.gallery_id = g.gallery_id
-            WHERE LOWER(a.name) = LOWER(?)
+            WHERE LOWER(a.name) LIKE LOWER(?) OR LOWER(?) LIKE LOWER(a.name || '%')
+            ORDER BY LENGTH(a.name) ASC
             """,
-            (name.strip(),),
+            (f"%{clean_name}%", clean_name),
         )
 
     def list_artifacts(

@@ -117,35 +117,36 @@ def identify():
     upload_path = UPLOADS_DIR / f"{uuid.uuid4().hex}_{safe_name}"
     upload_path.write_bytes(processed)
 
-    artifact_names = current_app.queries.get_all_artifact_names()
-    groq = current_app.groq
-    identification = groq.identify_artifact(processed, mime, artifact_names)
+    # Route through Vision Router (CNN first, Groq fallback if confidence < CNN_CONFIDENCE_THRESHOLD)
+    vision_router = getattr(current_app, "vision_router", None)
+    if vision_router:
+        result = vision_router.route_and_identify(processed, mime_type=mime, db_queries=current_app.queries)
+    else:
+        from vision.vision_router import VisionRouter
+        router = VisionRouter()
+        result = router.route_and_identify(processed, mime_type=mime, db_queries=current_app.queries)
 
-    name = identification.get("artifact_name", "UNKNOWN")
-    if name.upper() == "UNKNOWN":
-        return jsonify({
-            "status": "unknown",
-            "message": "I couldn't confidently match this image to an artifact in the supported museum collection.",
-            "identification": identification,
-        })
-
-    artifact = current_app.queries.get_artifact_by_name(name)
-    if not artifact:
-        return jsonify({
-            "status": "unknown",
-            "message": "The identified artifact is not in our supported collection.",
-            "identification": identification,
-        })
+    artifact = result.get("matched_artifact")
+    if not artifact and result.get("predicted_style"):
+        style = result["predicted_style"]
+        style_artifacts = current_app.queries.list_artifacts(search=style, limit=1)
+        if style_artifacts:
+            artifact = style_artifacts[0]
 
     session_id = request.form.get("session_id") or current_app.dialogue.create_session()
-    current_app.dialogue.set_artifact_context(session_id, artifact)
+    if artifact:
+        current_app.dialogue.set_artifact_context(session_id, artifact)
 
     return jsonify({
-        "status": "identified",
+        "status": "identified" if artifact else "classified",
         "session_id": session_id,
+        "predicted_style": result.get("predicted_style"),
+        "confidence": result.get("confidence"),
+        "recognition_source": result.get("recognition_source"),
+        "model_version": result.get("model_version", "cnn-v1"),
+        "raw_probabilities": result.get("raw_probabilities"),
         "artifact": artifact,
-        "confidence": identification.get("confidence", 0.0),
-        "identification": identification,
+        "identification": result,
     })
 
 

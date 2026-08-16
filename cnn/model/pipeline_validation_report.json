@@ -1,0 +1,118 @@
+{
+  "total_test_samples": 450,
+  "accepted_by_cnn_count": 41,
+  "potential_groq_fallback_count": 409,
+  "fallback_percentage": 90.89,
+  "average_cnn_confidence": 0.5273,
+  "confidence_vs_correctness": [
+    {
+      "range": "0.00-0.49",
+      "samples": 227,
+      "correct": 87,
+      "accuracy_pct": 38.33
+    },
+    {
+      "range": "0.50-0.59",
+      "samples": 79,
+      "correct": 40,
+      "accuracy_pct": 50.63
+    },
+    {
+      "range": "0.60-0.69",
+      "samples": 50,
+      "correct": 30,
+      "accuracy_pct": 60.0
+    },
+    {
+      "range": "0.70-0.79",
+      "samples": 53,
+      "correct": 40,
+      "accuracy_pct": 75.47
+    },
+    {
+      "range": "0.80-0.89",
+      "samples": 30,
+      "correct": 26,
+      "accuracy_pct": 86.67
+    },
+    {
+      "range": "0.90-1.00",
+      "samples": 11,
+      "correct": 9,
+      "accuracy_pct": 81.82
+    }
+  ],
+  "class_confusion_details": {
+    "expressionism": {
+      "total_samples": 75,
+      "correct": 37,
+      "accuracy_pct": 49.33,
+      "misclassified_as": {
+        "impressionism": 4,
+        "post-impressionism": 12,
+        "realism": 2,
+        "romanticism": 4,
+        "surrealism": 16
+      }
+    },
+    "impressionism": {
+      "total_samples": 75,
+      "correct": 52,
+      "accuracy_pct": 69.33,
+      "misclassified_as": {
+        "expressionism": 2,
+        "post-impressionism": 6,
+        "realism": 4,
+        "romanticism": 3,
+        "surrealism": 8
+      }
+    },
+    "post-impressionism": {
+      "total_samples": 75,
+      "correct": 41,
+      "accuracy_pct": 54.67,
+      "misclassified_as": {
+        "expressionism": 8,
+        "impressionism": 6,
+        "realism": 3,
+        "romanticism": 2,
+        "surrealism": 15
+      }
+    },
+    "realism": {
+      "total_samples": 75,
+      "correct": 14,
+      "accuracy_pct": 18.67,
+      "misclassified_as": {
+        "expressionism": 1,
+        "impressionism": 14,
+        "post-impressionism": 10,
+        "romanticism": 22,
+        "surrealism": 14
+      }
+    },
+    "romanticism": {
+      "total_samples": 75,
+      "correct": 52,
+      "accuracy_pct": 69.33,
+      "misclassified_as": {
+        "impressionism": 8,
+        "post-impressionism": 4,
+        "realism": 2,
+        "surrealism": 9
+      }
+    },
+    "surrealism": {
+      "total_samples": 75,
+      "correct": 36,
+      "accuracy_pct": 48.0,
+      "misclassified_as": {
+        "expressionism": 9,
+        "impressionism": 6,
+        "post-impressionism": 16,
+        "realism": 4,
+        "romanticism": 4
+      }
+    }
+  }
+}

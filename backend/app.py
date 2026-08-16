@@ -28,7 +28,7 @@ from services.chat_service import ChatService
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app, origins=CORS_ORIGINS, supports_credentials=True)
+    CORS(app, origins="*", supports_credentials=False)
 
     if not DB_PATH.exists():
         seed_database()
@@ -42,15 +42,19 @@ def create_app() -> Flask:
 
     train_classifier()
 
+    from vision.vision_router import VisionRouter
+
     dialogue = DialogueManager()
     groq = GroqClient()
     chat_service = ChatService(queries, index, dialogue, groq)
+    vision_router = VisionRouter()
 
     app.queries = queries
     app.index = index
     app.dialogue = dialogue
     app.groq = groq
     app.chat_service = chat_service
+    app.vision_router = vision_router
     app.db_conn = conn
 
     @app.route("/")
@@ -71,4 +75,6 @@ def create_app() -> Flask:
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    import os
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

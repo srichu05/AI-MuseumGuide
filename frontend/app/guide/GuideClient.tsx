@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ImageUpload } from "@/components/upload/ImageUpload";
 import { ChatPanel } from "@/components/chat/ChatPanel";
@@ -10,6 +10,20 @@ export default function GuidePage() {
   const searchParams = useSearchParams();
   const [sessionId, setSessionId] = useState<string>();
   const [artifact, setArtifact] = useState<Artifact | null>(null);
+  useEffect(() => {
+    const artParam = searchParams.get("artifact") || searchParams.get("artifact_id");
+    if (artParam) {
+      import("@/lib/api").then(({ getArtifact }) => {
+        getArtifact(artParam)
+          .then((res) => {
+            if (res.artifact) {
+              setArtifact(res.artifact);
+            }
+          })
+          .catch(() => {});
+      });
+    }
+  }, [searchParams]);
 
   const handleIdentified = (result: IdentifyResponse) => {
     if (result.session_id) setSessionId(result.session_id);
