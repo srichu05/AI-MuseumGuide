@@ -6,6 +6,7 @@ from typing import Any
 from config import CNN_CONFIDENCE_THRESHOLD
 from vision.cnn_service import LocalCNNService
 from vision.groq_fallback import GroqFallbackService
+from vision.local_matcher import match_local_artifact
 
 
 class VisionRouter:
@@ -34,10 +35,20 @@ class VisionRouter:
                 - recognition_source ("cnn" | "groq_fallback")
                 - model_version ("cnn-v1")
                 - raw_probabilities (dict, present if recognition_source == "cnn")
-                - matched_artifact (dict | None, present if fallback matches DB artifact)
+                - matched_artifact (dict | None)
         """
         cnn_result = self.cnn_service.predict(image_bytes)
         confidence = cnn_result.get("confidence", 0.0)
+
+        # Check local histogram matcher as fast visual feature check
+        local_matched_artifact = None
+        if db_queries is not None:
+            try:
+                matched_art_id, match_score = match_local_artifact(image_bytes)
+                if matched_art_id:
+                    local_matched_artifact = db_queries.get_artifact_by_id(matched_art_id)
+            except Exception:
+                pass
 
         # High confidence -> trust local CNN
         if confidence >= self.threshold:
@@ -47,7 +58,7 @@ class VisionRouter:
                 "recognition_source": "cnn",
                 "model_version": "cnn-v1",
                 "raw_probabilities": cnn_result.get("raw_probabilities", {}),
-                "matched_artifact": None,
+                "matched_artifact": local_matched_artifact,
             }
 
         # Low confidence -> route to GroqCloud visual fallback
@@ -57,12 +68,14 @@ class VisionRouter:
             db_queries=db_queries,
         )
 
+        matched_art = fallback_result.get("matched_artifact") or local_matched_artifact
+
         return {
             "predicted_style": fallback_result.get("predicted_style", "Unknown"),
             "confidence": None,
             "recognition_source": "groq_fallback",
             "model_version": "cnn-v1",
-            "matched_artifact": fallback_result.get("matched_artifact"),
+            "matched_artifact": matched_art,
             "cnn_confidence_recorded": confidence,
             "error": fallback_result.get("error"),
         }

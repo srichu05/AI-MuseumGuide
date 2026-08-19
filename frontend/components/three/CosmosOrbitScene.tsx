@@ -22,7 +22,7 @@ export function CosmosOrbitScene({ images }: CosmosOrbitSceneProps) {
 
   return (
     <div className="absolute inset-0 -z-10 h-full w-full opacity-70 pointer-events-auto">
-      <Canvas camera={{ position: [-10, 0, 10], fov: 50 }}>
+      <Canvas camera={{ position: [-10, 1.4, 10], fov: 50 }}>
         <ambientLight intensity={0.6} />
         <pointLight position={[10, 10, 10]} intensity={1} />
         <Suspense fallback={null}>

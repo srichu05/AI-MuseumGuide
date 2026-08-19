@@ -101,11 +101,20 @@ export interface ChatResponse {
 }
 
 export interface IdentifyResponse {
-  status: "identified" | "unknown";
+  status: "identified" | "classified" | "unknown";
   message?: string;
   session_id?: string;
-  artifact?: Artifact;
-  confidence?: number;
+  artifact?: Artifact | null;
+  confidence?: number | null;
+  predicted_style?: string;
+  recognition_source?: "cnn" | "groq_fallback" | string;
+  model_version?: string;
+  identification?: {
+    predicted_style?: string;
+    recognition_source?: string;
+    cnn_confidence_recorded?: number;
+    candidate_artist_name?: string;
+  };
 }
 
 export function getArtifactImage(artifact: Artifact): string {

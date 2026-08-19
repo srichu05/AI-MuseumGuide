@@ -36,12 +36,19 @@ class GroqFallbackService:
         """
         if supported_styles is None:
             supported_styles = [
-                "Expressionism",
+                "Ancient Egypt",
+                "Classical Antiquity",
+                "Renaissance",
+                "Baroque",
+                "Neoclassicism",
+                "Romanticism",
                 "Impressionism",
                 "Post-Impressionism",
+                "Expressionism",
                 "Realism",
-                "Romanticism",
                 "Surrealism",
+                "Modern Art",
+                "Contemporary Art",
             ]
 
         fallback_result: dict[str, Any] = {
@@ -59,16 +66,26 @@ class GroqFallbackService:
         b64_img = base64.b64encode(image_bytes).decode("utf-8")
         styles_str = ", ".join(supported_styles)
 
+        catalog_text = ""
+        if db_queries is not None and hasattr(db_queries, "get_all_artifact_names"):
+            try:
+                artifact_names = db_queries.get_all_artifact_names()
+                if artifact_names:
+                    catalog_text = f"\nOur museum collection includes the following artifacts:\n{', '.join(artifact_names)}\nIf the image matches one of these works, output its exact title in candidate_artifact_name.\n"
+            except Exception:
+                pass
+
         prompt = (
             "You are an expert art historian and museum visual recognition system.\n"
-            f"Classify the dominant art style of this image from the following supported styles: {styles_str}.\n"
+            f"Classify the dominant art style/period of this image from: {styles_str}.\n"
+            f"{catalog_text}"
             "Identify:\n"
-            "1. Likely art style\n"
-            "2. Possible artwork/artifact identity if recognizable (otherwise state UNKNOWN)\n"
-            "3. Artist if confidently identifiable (otherwise state UNKNOWN)\n"
+            "1. Likely art style or historical period\n"
+            "2. Specific artwork/artifact title if recognizable (otherwise state UNKNOWN)\n"
+            "3. Artist name if confidently identifiable (otherwise state UNKNOWN)\n"
             "Do NOT invent answers if uncertain.\n\n"
             "Respond ONLY with a single JSON object in this exact format:\n"
-            '{\n  "predicted_style": "<one of the supported styles or Unknown>",\n  "candidate_artifact_name": "<specific artwork title or UNKNOWN>",\n  "candidate_artist_name": "<artist name or UNKNOWN>"\n}'
+            '{\n  "predicted_style": "<art style or historical period or Unknown>",\n  "candidate_artifact_name": "<specific artwork title or UNKNOWN>",\n  "candidate_artist_name": "<artist name or UNKNOWN>"\n}'
         )
 
         try:

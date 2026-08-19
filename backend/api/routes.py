@@ -127,11 +127,6 @@ def identify():
         result = router.route_and_identify(processed, mime_type=mime, db_queries=current_app.queries)
 
     artifact = result.get("matched_artifact")
-    if not artifact and result.get("predicted_style"):
-        style = result["predicted_style"]
-        style_artifacts = current_app.queries.list_artifacts(search=style, limit=1)
-        if style_artifacts:
-            artifact = style_artifacts[0]
 
     session_id = request.form.get("session_id") or current_app.dialogue.create_session()
     if artifact:

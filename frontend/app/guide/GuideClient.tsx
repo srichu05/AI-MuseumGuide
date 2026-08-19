@@ -10,6 +10,7 @@ export default function GuidePage() {
   const searchParams = useSearchParams();
   const [sessionId, setSessionId] = useState<string>();
   const [artifact, setArtifact] = useState<Artifact | null>(null);
+
   useEffect(() => {
     const artParam = searchParams.get("artifact") || searchParams.get("artifact_id");
     if (artParam) {
@@ -27,7 +28,8 @@ export default function GuidePage() {
 
   const handleIdentified = (result: IdentifyResponse) => {
     if (result.session_id) setSessionId(result.session_id);
-    if (result.artifact) setArtifact(result.artifact);
+    // Reset artifact context when the upload is not a matched database artifact
+    setArtifact(result.artifact || null);
   };
 
   return (

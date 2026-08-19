@@ -59,7 +59,7 @@ class MuseumQueries:
             return rec
 
         # Fallback to LIKE match
-        return self._fetchone_dict(
+        rec = self._fetchone_dict(
             """
             SELECT a.*, ar.name AS artist_name, ar.artist_id,
                    p.name AS period_name, p.period_id,
@@ -68,11 +68,36 @@ class MuseumQueries:
             LEFT JOIN artists ar ON a.artist_id = ar.artist_id
             LEFT JOIN historical_periods p ON a.period_id = p.period_id
             LEFT JOIN galleries g ON a.gallery_id = g.gallery_id
-            WHERE LOWER(a.name) LIKE LOWER(?) OR LOWER(?) LIKE LOWER(a.name || '%')
+            WHERE LOWER(a.name) LIKE LOWER(?) OR LOWER(?) LIKE LOWER('%' || a.name || '%')
             ORDER BY LENGTH(a.name) ASC
             """,
             (f"%{clean_name}%", clean_name),
         )
+        if rec:
+            return rec
+
+        # Token/keyword overlap fallback (e.g. "Gold Mask of Tutankhamun" -> matches "Mask of Tutankhamun")
+        import re
+        tokens = [t.lower() for t in re.findall(r"\w+", raw_name) if len(t) > 3 and t.lower() not in {"gold", "mask", "bust", "statue", "painting", "sculpture"}]
+        for token in tokens:
+            rec = self._fetchone_dict(
+                """
+                SELECT a.*, ar.name AS artist_name, ar.artist_id,
+                       p.name AS period_name, p.period_id,
+                       g.name AS gallery_name, g.floor, g.location AS gallery_location
+                FROM artifacts a
+                LEFT JOIN artists ar ON a.artist_id = ar.artist_id
+                LEFT JOIN historical_periods p ON a.period_id = p.period_id
+                LEFT JOIN galleries g ON a.gallery_id = g.gallery_id
+                WHERE LOWER(a.name) LIKE LOWER(?)
+                ORDER BY LENGTH(a.name) ASC
+                """,
+                (f"%{token}%",),
+            )
+            if rec:
+                return rec
+
+        return None
 
     def list_artifacts(
         self,

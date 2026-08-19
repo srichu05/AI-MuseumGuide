@@ -115,11 +115,23 @@ class ChatService:
             return self._build_response(session_id, query, intent, intent_result, entities, slots, answer, sources, start)
 
         if not sqlite_facts and not ir_facts and not artifact_name:
-            answer = {
-                "answer": "Please upload or specify an artifact first so I can answer your question using our museum collection.",
-                "generated_by": "template",
-            }
-            return self._build_response(session_id, query, intent, intent_result, entities, slots, answer, sources, start)
+            bm25_results = self.index.search_bm25(query, top_k=BM25_TOP_K)
+            if bm25_results:
+                for r in bm25_results:
+                    sources.append({
+                        "title": r.title,
+                        "source_type": r.source_type,
+                        "document_id": r.document_id,
+                        "chunk_id": r.chunk_id,
+                        "score": r.score,
+                    })
+                    ir_facts.append(r.text)
+            else:
+                answer = {
+                    "answer": "Please upload an image or specify an artifact title (e.g., 'Mask of Tutankhamun', 'Mona Lisa', 'Starry Night') so I can answer your question using our museum collection.",
+                    "generated_by": "template",
+                }
+                return self._build_response(session_id, query, intent, intent_result, entities, slots, answer, sources, start)
 
         if sqlite_facts and not sources:
             sources.append({"title": "Museum Artifact Database", "source_type": "sqlite", "document_id": artifact_id or ""})
