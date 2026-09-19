@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ai-museum-backend
+    env: python
+    pythonVersion: 3.11.9
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --chdir backend app:app --timeout 120 --workers 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: FLASK_DEBUG
+        value: "false"
+      - key: ENABLE_HEAVY_QA_MODEL
+        value: "false"

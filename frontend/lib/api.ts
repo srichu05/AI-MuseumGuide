@@ -118,15 +118,13 @@ export interface IdentifyResponse {
 }
 
 export function getArtifactImage(artifact: Artifact): string {
-  const base = getApiBase();
-
   if (artifact.image_path) {
     if (artifact.image_path.startsWith("http")) {
       return artifact.image_path;
     }
 
-    return `${base}${artifact.image_path.startsWith("/") ? "" : "/"}${artifact.image_path}`;
+    return artifact.image_path.startsWith("/") ? artifact.image_path : `/${artifact.image_path}`;
   }
 
-  return `${base}/artifacts/${artifact.artifact_id}.jpg`;
+  return `/artifacts/${artifact.artifact_id}.jpg`;
 }

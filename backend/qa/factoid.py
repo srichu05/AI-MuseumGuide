@@ -9,6 +9,11 @@ _qa_pipeline = None
 def get_qa_pipeline():
     global _qa_pipeline
     if _qa_pipeline is None:
+        import os
+        enable_heavy = os.getenv("ENABLE_HEAVY_QA_MODEL", "false").lower() == "true"
+        if not enable_heavy:
+            _qa_pipeline = False
+            return None
         try:
             from transformers import pipeline
             from config import QA_MODEL_NAME
