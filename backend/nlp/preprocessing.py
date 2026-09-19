@@ -3,23 +3,22 @@ from __future__ import annotations
 
 import re
 
-import nltk
-import spacy
-
-from config import SPACY_MODEL
-
 _nlp = None
 
 
 def _ensure_nltk():
-    for resource in ("punkt", "punkt_tab", "stopwords", "wordnet"):
-        try:
-            nltk.data.find(f"tokenizers/{resource}" if "punkt" in resource else f"corpora/{resource}")
-        except Exception:
+    try:
+        import nltk
+        for resource in ("punkt", "punkt_tab", "stopwords", "wordnet"):
             try:
-                nltk.download(resource, quiet=True)
+                nltk.data.find(f"tokenizers/{resource}" if "punkt" in resource else f"corpora/{resource}")
             except Exception:
-                pass
+                try:
+                    nltk.download(resource, quiet=True)
+                except Exception:
+                    pass
+    except Exception:
+        pass
 
 
 def get_nlp():
@@ -27,13 +26,18 @@ def get_nlp():
     if _nlp is None:
         _ensure_nltk()
         try:
+            import spacy
+            from config import SPACY_MODEL
             _nlp = spacy.load(SPACY_MODEL)
         except Exception:
             try:
+                import spacy
+                from config import SPACY_MODEL
                 from spacy.cli import download
                 download(SPACY_MODEL)
                 _nlp = spacy.load(SPACY_MODEL)
             except Exception:
+                import spacy
                 _nlp = spacy.blank("en")
     return _nlp
 

@@ -5,11 +5,8 @@ import io
 import json
 import sys
 from pathlib import Path
-from typing import Any
-
 import numpy as np
 from PIL import Image
-import tensorflow as tf
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MODEL_DIR = PROJECT_ROOT / "cnn" / "model"
@@ -17,11 +14,11 @@ MODEL_PATH = MODEL_DIR / "art_style_cnn.keras"
 CLASS_NAMES_PATH = MODEL_DIR / "class_names.json"
 
 IMG_SIZE = (128, 128)
-_model: tf.keras.Model | None = None
+_model: Any = None
 _class_names: list[str] | None = None
 
 
-def load_cnn_model() -> tuple[tf.keras.Model, list[str]]:
+def load_cnn_model() -> tuple[Any, list[str]]:
     global _model, _class_names
     if _model is not None and _class_names is not None:
         return _model, _class_names
@@ -30,6 +27,8 @@ def load_cnn_model() -> tuple[tf.keras.Model, list[str]]:
         raise FileNotFoundError(f"Trained CNN model not found at {MODEL_PATH}")
     if not CLASS_NAMES_PATH.exists():
         raise FileNotFoundError(f"Class names mapping not found at {CLASS_NAMES_PATH}")
+
+    import tensorflow as tf
 
     _model = tf.keras.models.load_model(MODEL_PATH)
     _class_names = json.loads(CLASS_NAMES_PATH.read_text())

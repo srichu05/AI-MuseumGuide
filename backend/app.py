@@ -15,14 +15,14 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from api.routes import api
-from config import CORS_ORIGINS, DB_PATH
+from config import CORS_ORIGINS, DB_PATH, INTENT_MODEL_PATH
 from database.connection import get_connection, init_db
 from database.queries import MuseumQueries
 from database.seed import seed as seed_database
 from dialogue.manager import DialogueManager
 from ir.retriever import DocumentIndex
 from llm.groq_client import GroqClient
-from nlp.intent_classifier import train_classifier
+from nlp.intent_classifier import load_classifier, train_classifier
 from services.chat_service import ChatService
 
 
@@ -40,7 +40,10 @@ def create_app() -> Flask:
         chunks = queries.get_document_chunks()
         index.build(chunks)
 
-    train_classifier()
+    if not INTENT_MODEL_PATH.exists():
+        train_classifier()
+    else:
+        load_classifier()
 
     from vision.vision_router import VisionRouter
 
