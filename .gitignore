@@ -50,7 +50,6 @@ frontend/build/
 *.gif
 *.txt
 dataset/images/
-frontend/public/artifacts/
 
 # OS & Editor Metadata
 .DS_Store
@@ -59,3 +58,8 @@ Thumbs.db
 *.tmp
 .vscode/
 .idea/
+
+
+# Keep AI Museum artifact images
+!frontend/public/artifacts/
+!frontend/public/artifacts/*.jpg
